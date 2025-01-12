@@ -12,16 +12,36 @@ const addQuoteButton = document.getElementById("addQuote");
 const newQuoteText = document.getElementById("newQuoteText");
 const newQuoteCategory = document.getElementById("newQuoteCategory");
 
+// Function to clear the quote display
+function clearQuoteDisplay() {
+  while (quoteDisplay.firstChild) {
+    quoteDisplay.removeChild(quoteDisplay.firstChild);
+  }
+}
+
 // Function to display a random quote
 function showRandomQuote() {
   if (quotes.length === 0) {
-    quoteDisplay.textContent = "No quotes available!";
+    clearQuoteDisplay();
+    const noQuoteMessage = document.createElement("p");
+    noQuoteMessage.textContent = "No quotes available!";
+    quoteDisplay.appendChild(noQuoteMessage);
     return;
   }
 
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const { text, category } = quotes[randomIndex];
-  quoteDisplay.textContent = `"${text}" — ${category}`;
+
+  clearQuoteDisplay();
+  const quoteTextElement = document.createElement("p");
+  quoteTextElement.textContent = `"${text}"`;
+
+  const quoteCategoryElement = document.createElement("p");
+  quoteCategoryElement.style.fontStyle = "italic";
+  quoteCategoryElement.textContent = `— ${category}`;
+
+  quoteDisplay.appendChild(quoteTextElement);
+  quoteDisplay.appendChild(quoteCategoryElement);
 }
 
 // Function to add a new quote
