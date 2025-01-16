@@ -420,6 +420,86 @@ document.addEventListener("DOMContentLoaded", () => {
   populateCategories();
   syncDataWithServer(); // Initial sync when page loads
 });
+// Sync quotes from localStorage with the server
+async function syncQuotes() {
+  const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+  try {
+    // Simulate fetching data from the server
+    const serverQuotes = await fetchQuotesFromServer();
+
+    // Resolve any conflicts between local and server data
+    const updatedQuotes = resolveConflicts(serverQuotes, localQuotes);
+
+    // Save the updated quotes to localStorage
+    localStorage.setItem("quotes", JSON.stringify(updatedQuotes));
+
+    // Update the displayed quotes
+    displayQuotes(updatedQuotes);
+
+    // Send updated data to the server (simulate POST request)
+    await postQuotesToServer(updatedQuotes);
+  } catch (error) {
+    console.error("Error during sync:", error);
+  }
+}
+
+// Fetch quotes from the server (simulated) using async/await
+async function fetchQuotesFromServer() {
+  const response = await fetch(serverUrl);
+  const data = await response.json();
+
+  // For this simulation, return a slice of the response as "quotes"
+  return data.slice(0, 5); // Simulate returning some server data
+}
+
+// Post quotes to the server (simulate POST request)
+async function postQuotesToServer(quotes) {
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST', // Sending data to the server
+      headers: {
+        'Content-Type': 'application/json', // Specifying the content type as JSON
+      },
+      body: JSON.stringify(quotes), // Sending the quotes as the request body
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to post data to server');
+    }
+
+    console.log('Data posted to server successfully');
+  } catch (error) {
+    console.error('Error posting data to server:', error);
+  }
+}
+
+// Resolve conflicts: Server data takes precedence
+function resolveConflicts(serverQuotes, localQuotes) {
+  let mergedQuotes = [...localQuotes];
+
+  serverQuotes.forEach(serverQuote => {
+    const localQuote = localQuotes.find(q => q.id === serverQuote.id);
+    if (localQuote && localQuote.text !== serverQuote.text) {
+      mergedQuotes = mergedQuotes.map(q =>
+        q.id === serverQuote.id ? serverQuote : q
+      );
+    }
+  });
+
+  return mergedQuotes;
+}
+
+// Simulate periodic syncing with the server every 30 seconds
+setInterval(() => {
+  syncQuotes();
+}, 30000);
+
+// Initialize on page load: Populate categories and display existing quotes
+document.addEventListener("DOMContentLoaded", () => {
+  populateCategories();
+  syncQuotes(); // Initial sync when page loads
+});
 
 
  
