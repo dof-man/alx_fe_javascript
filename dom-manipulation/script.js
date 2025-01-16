@@ -283,7 +283,7 @@ function syncDataWithServer() {
   const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
 
   // Simulate fetching data from the server
-  fetchFromServer().then(serverQuotes => {
+  fetchQuotesFromServer().then(serverQuotes => {
     const updatedQuotes = resolveConflicts(serverQuotes, localQuotes);
     localStorage.setItem("quotes", JSON.stringify(updatedQuotes));
     displayQuotes(updatedQuotes);
@@ -291,7 +291,7 @@ function syncDataWithServer() {
 }
 
 // Fetch quotes from the server (simulated)
-function fetchFromServer() {
+function fetchQuotesFromServer() {
   return fetch(serverUrl)
     .then(response => response.json())
     .then(data => {
@@ -395,3 +395,7 @@ document.addEventListener("DOMContentLoaded", () => {
   syncDataWithServer(); // Initial sync when page loads
 });
 
+
+
+
+  
