@@ -282,39 +282,54 @@ function addQuote() {
 async function syncDataWithServer() {
   const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
 
-  // Simulate fetching data from the server
   try {
+    // Simulate fetching data from the server
     const serverQuotes = await fetchQuotesFromServer();
+
+    // Resolve any conflicts between local and server data
     const updatedQuotes = resolveConflicts(serverQuotes, localQuotes);
+
+    // Save the updated quotes to localStorage
     localStorage.setItem("quotes", JSON.stringify(updatedQuotes));
+
+    // Update the displayed quotes
     displayQuotes(updatedQuotes);
+
+    // Send updated data to the server (simulate POST request)
+    await postQuotesToServer(updatedQuotes);
   } catch (error) {
-    console.error("Error syncing data with server:", error);
+    console.error("Error during sync:", error);
   }
 }
 
-// Fetch quotes from the server (simulated)
+// Fetch quotes from the server (simulated) using async/await
 async function fetchQuotesFromServer() {
-  try {
-    const response = await fetch(serverUrl);
-    const data = await response.json();
-  // Simulate fetching data from the server
-  fetchQuotesFromServer().then(serverQuotes => {
-    const updatedQuotes = resolveConflicts(serverQuotes, localQuotes);
-    localStorage.setItem("quotes", JSON.stringify(updatedQuotes));
-    displayQuotes(updatedQuotes);
-  });
+  const response = await fetch(serverUrl);
+  const data = await response.json();
+
+  // For this simulation, return a slice of the response as "quotes"
+  return data.slice(0, 5); // Simulate returning some server data
 }
 
-// Fetch quotes from the server (simulated)
-function fetchQuotesFromServer() {
-  return fetch(serverUrl)
-    .then(response => response.json())
-    .then(data => {
-      // For this simulation, return a slice of the response as "quotes"
-      return data.slice(0, 5); // Simulate returning some server data
-    })
-    .catch(error => console.error("Error fetching data from server:", error));
+// Post quotes to the server (simulate POST request)
+async function postQuotesToServer(quotes) {
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST', // Sending data to the server
+      headers: {
+        'Content-Type': 'application/json', // Specifying the content type as JSON
+      },
+      body: JSON.stringify(quotes), // Sending the quotes as the request body
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to post data to server');
+    }
+
+    console.log('Data posted to server successfully');
+  } catch (error) {
+    console.error('Error posting data to server:', error);
+  }
 }
 
 // Resolve conflicts: Server data takes precedence
@@ -395,11 +410,6 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// Notify user of conflicts during sync
-function notifyUserOfConflict(conflictDetails) {
-  alert(`Conflict detected! Server data was applied. Conflict details: ${conflictDetails}`);
-}
-
 // Simulate periodic syncing with the server every 30 seconds
 setInterval(() => {
   syncDataWithServer();
@@ -411,6 +421,12 @@ document.addEventListener("DOMContentLoaded", () => {
   syncDataWithServer(); // Initial sync when page loads
 });
 
+
+ 
+
+  
+
+ 
 
 
 
