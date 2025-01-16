@@ -40,5 +40,32 @@ function addQuote() {
   } else {
     alert("Please fill in both fields.");
   }
+  function createAddQuoteForm() {
+  const formContainer = document.createElement('div');
+  
+  const quoteTextInput = document.createElement('input');
+  quoteTextInput.id = 'newQuoteText';
+  quoteTextInput.type = 'text';
+  quoteTextInput.placeholder = 'Enter a new quote';
+
+  const categoryInput = document.createElement('input');
+  categoryInput.id = 'newQuoteCategory';
+  categoryInput.type = 'text';
+  categoryInput.placeholder = 'Enter quote category';
+
+  const addButton = document.createElement('button');
+  addButton.textContent = 'Add Quote';
+  addButton.addEventListener('click', addQuote);
+
+  formContainer.appendChild(quoteTextInput);
+  formContainer.appendChild(categoryInput);
+  formContainer.appendChild(addButton);
+
+  // Append the form to the body or a specific container
+  document.body.appendChild(formContainer);
+}
+
+// Call the createAddQuoteForm function to display the form on page load
+createAddQuoteForm();
 }
 
