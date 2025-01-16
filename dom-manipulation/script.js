@@ -279,9 +279,25 @@ function addQuote() {
 }
 
 // Sync local data with the server periodically
-function syncDataWithServer() {
+async function syncDataWithServer() {
   const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
 
+  // Simulate fetching data from the server
+  try {
+    const serverQuotes = await fetchQuotesFromServer();
+    const updatedQuotes = resolveConflicts(serverQuotes, localQuotes);
+    localStorage.setItem("quotes", JSON.stringify(updatedQuotes));
+    displayQuotes(updatedQuotes);
+  } catch (error) {
+    console.error("Error syncing data with server:", error);
+  }
+}
+
+// Fetch quotes from the server (simulated)
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch(serverUrl);
+    const data = await response.json();
   // Simulate fetching data from the server
   fetchQuotesFromServer().then(serverQuotes => {
     const updatedQuotes = resolveConflicts(serverQuotes, localQuotes);
