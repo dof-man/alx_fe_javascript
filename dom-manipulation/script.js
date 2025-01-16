@@ -500,6 +500,32 @@ document.addEventListener("DOMContentLoaded", () => {
   populateCategories();
   syncQuotes(); // Initial sync when page loads
 });
+async function syncQuotes() {
+  const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+  try {
+    // Simulate fetching data from the server
+    const serverQuotes = await fetchQuotesFromServer();
+
+    // Resolve any conflicts between local and server data
+    const updatedQuotes = resolveConflicts(serverQuotes, localQuotes);
+
+    // Save the updated quotes to localStorage
+    localStorage.setItem("quotes", JSON.stringify(updatedQuotes));
+
+    // Update the displayed quotes
+    displayQuotes(updatedQuotes);
+
+    // Send updated data to the server (simulate POST request)
+    await postQuotesToServer(updatedQuotes);
+
+    // Success message
+    console.log("Quotes synced with server!");
+  } catch (error) {
+    console.error("Error during sync:", error);
+  }
+}
+
 
 
  
